@@ -144,7 +144,6 @@ console.log('\nBalance of miner is', jasCoin.getBalanceOfAddress('miner-address'
 
 
 console.log("Blockchain is valid: " + jasCoin.isChainValid());
-console.log(JSON.stringify(jasCoin, null, 4));
 
 console.log('\nBalance of address1 is', jasCoin.getBalanceOfAddress('address1'));
 
@@ -177,3 +176,5 @@ jasCoin.createTransaction(new Transaction('address3', 'address1', 10));
 console.log('\n Starting the miner...');
 jasCoin.minePendingTransactions('miner-address');
 console.log('\nBalance of address3 is', jasCoin.getBalanceOfAddress('address3'));
+
+console.log(JSON.stringify(jasCoin, null, 4));
