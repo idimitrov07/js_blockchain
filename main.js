@@ -2,9 +2,9 @@ const SHA256 = require("crypto-js/sha256");
 
 class Transaction {
   constructor(fromAddress, toAddress, amount) {
-      this.fromAddress = fromAddress;
-      this.toAddress = toAddress;
-      this.amount = amount;
+    this.fromAddress = fromAddress;
+    this.toAddress = toAddress;
+    this.amount = amount;
   }
 }
 
@@ -60,7 +60,21 @@ class Blockchain{
     }
 
     createTransaction(transaction){
-        this.pendingTransactions.push(transaction);
+        if (this.isTransactionValid(transaction)) {
+            this.pendingTransactions.push(transaction);
+        } else {
+            console.log("Transaction is not valid.");
+            console.log("Transaction amount: " + transaction.amount);
+            console.log("Sender balance: " + this.getBalanceOfAddress(
+                                                    transaction.fromAddress));
+        }
+    }
+
+    isTransactionValid(transaction) {
+        if (transaction.amount > this.getBalanceOfAddress(transaction.fromAddress)) {
+            return false;
+        }
+        return true;
     }
 
     getBalanceOfAddress(address){
@@ -99,17 +113,20 @@ class Blockchain{
 }
 
 let jasCoin = new Blockchain();
+
 jasCoin.createTransaction(new Transaction('address1', 'address2', 100));
 jasCoin.createTransaction(new Transaction('address2', 'address1', 50));
-jasCoin.createTransaction(new Transaction('address2', 'address3', 50));
-jasCoin.createTransaction(new Transaction('address1', 'address3', 5));
-jasCoin.createTransaction(new Transaction('address3', 'address1', 10));
-
-console.log('\n Starting the miner...');
+console.log('\n Starting the miner again...');
 jasCoin.minePendingTransactions('miner-address');
-
 console.log('\nBalance of miner is', jasCoin.getBalanceOfAddress('miner-address'));
 
+jasCoin.createTransaction(new Transaction('address1', 'address3', 5));
+jasCoin.createTransaction(new Transaction('address3', 'address1', 10));
+console.log('\n Starting the miner...');
+jasCoin.minePendingTransactions('miner-address');
+console.log('\nBalance of miner is', jasCoin.getBalanceOfAddress('miner-address'));
+
+jasCoin.createTransaction(new Transaction('address2', 'address3', 50));
 console.log('\n Starting the miner again...');
 jasCoin.minePendingTransactions('miner-address');
 
@@ -133,4 +150,30 @@ console.log('\nBalance of address1 is', jasCoin.getBalanceOfAddress('address1'))
 
 console.log('\nBalance of address2 is', jasCoin.getBalanceOfAddress('address2'));
 
+console.log('\nBalance of address3 is', jasCoin.getBalanceOfAddress('address3'));
+console.log(jasCoin.isTransactionValid(new Transaction('address1', 'address2', 100)));
+
+jasCoin.createTransaction(new Transaction('miner-address', 'address2', 200));
+jasCoin.minePendingTransactions('miner-address');
+console.log('\nBalance of address2 is', jasCoin.getBalanceOfAddress('address2'));
+console.log('\nBalance of miner is', jasCoin.getBalanceOfAddress('miner-address'));
+
+jasCoin.createTransaction(new Transaction('address2', 'address1', 50));
+console.log('\n Starting the miner again...');
+jasCoin.minePendingTransactions('miner-address');
+console.log('\nBalance of address1 is', jasCoin.getBalanceOfAddress('address1'));
+console.log('\nBalance of address2 is', jasCoin.getBalanceOfAddress('address2'));
+console.log('\nBalance of miner is', jasCoin.getBalanceOfAddress('miner-address'));
+
+jasCoin.createTransaction(new Transaction('address1', 'address3', 5));
+console.log('\n Starting the miner...');
+jasCoin.minePendingTransactions('miner-address');
+console.log('\nBalance of address1 is', jasCoin.getBalanceOfAddress('address1'));
+console.log('\nBalance of address2 is', jasCoin.getBalanceOfAddress('address2'));
+console.log('\nBalance of address3 is', jasCoin.getBalanceOfAddress('address3'));
+console.log('\nBalance of miner is', jasCoin.getBalanceOfAddress('miner-address'));
+
+jasCoin.createTransaction(new Transaction('address3', 'address1', 10));
+console.log('\n Starting the miner...');
+jasCoin.minePendingTransactions('miner-address');
 console.log('\nBalance of address3 is', jasCoin.getBalanceOfAddress('address3'));
