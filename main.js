@@ -39,6 +39,7 @@ class Blockchain {
       const currentBlock = this.chain[i]
       const previousBlock = this.chain[i - 1];
 
+      // recalculate hash and check if it's the same
       if(currentBlock.hash !== currentBlock.calculateHash()) {
         return false;
       }
@@ -65,7 +66,7 @@ console.log("Is blockchain valid? - " + jasCoin.isChainValid());
 
 // try to tamper with the second block
 // jasCoin.chain[1].data = { amount: 200 };
-// jasCoin.chain[1].hash = jasCoin.chain[2].calculateHash();
+// jasCoin.chain[1].hash = jasCoin.chain[1].calculateHash();
 // console.log("Is blockchain valid? - " + jasCoin.isChainValid());
 
 console.log(JSON.stringify(jasCoin, null, 4));
